@@ -4,18 +4,31 @@ class ImageCard extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = { spans : 0 };
+
         this.imageRef = React.createRef();
+    }
+
+    componentDidMount() {
+        // Have to do this because the clientHeight is not available when the component first mounts. It's only after it has loaded then the height can be accessed from the DOM
+        this.imageRef.current.addEventListener('load', this.setSpans);
+    }
+
+    setSpans = () => {
+        const height = this.imageRef.current.clientHeight;
+        const spans = Math.ceil(height / 10);
+        this.setState({ spans });
     }
 
     render() {
         const { description, urls } =  this.props.image;
 
         return (
-            <div>
+            <div style={{ gridRowEnd: `span ${this.state.spans}`}}>
                 <img 
                     ref={this.imageRef}
                     alt={description} 
-                    src={urls.thumb}
+                    src={urls.regular}
                 />
             </div>
         )
